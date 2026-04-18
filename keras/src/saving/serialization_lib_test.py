@@ -420,9 +420,8 @@ class SerializationLibTest(testing.TestCase):
             restored_dense_relu_string.activation, keras.activations.relu
         )
 
-
     def test_deserialize_missing_class_name_raises(self):
-        # Missing class_name but module is present — should raise, not return dict
+        # Missing class_name but module present: should raise, not return dict
         config = {"module": "keras.layers", "config": {"units": 32}}
         with self.assertRaisesRegex(ValueError, "missing required keys"):
             serialization_lib.deserialize_keras_object(config)

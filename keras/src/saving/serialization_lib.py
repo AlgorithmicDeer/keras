@@ -611,14 +611,10 @@ def deserialize_keras_object(
 
     if "class_name" not in config or "config" not in config:
         if "module" in config or "registered_name" in config:
-            missing = [
-                k
-                for k in ("class_name", "config")
-                if k not in config
-            ]
+            missing = [k for k in ("class_name", "config") if k not in config]
             raise ValueError(
-                "A Keras config dict is missing required keys "
-                f"{missing}. Received: config={config}"
+                f"A Keras config dict is missing required keys {missing}. "
+                f"Received: config={config}"
             )
         return {
             key: deserialize_keras_object(
