@@ -421,6 +421,24 @@ class SerializationLibTest(testing.TestCase):
         )
 
 
+    def test_deserialize_missing_class_name_raises(self):
+        # Missing class_name but module is present — should raise, not return dict
+        config = {"module": "keras.layers", "config": {"units": 32}}
+        with self.assertRaisesRegex(ValueError, "missing required keys"):
+            serialization_lib.deserialize_keras_object(config)
+
+    def test_deserialize_missing_class_name_with_registered_name_raises(self):
+        config = {"registered_name": "MyLayer", "config": {"units": 32}}
+        with self.assertRaisesRegex(ValueError, "missing required keys"):
+            serialization_lib.deserialize_keras_object(config)
+
+    def test_deserialize_plain_dict_no_keras_keys_passthrough(self):
+        # Plain dict without Keras-specific keys should still work
+        config = {"foo": "bar", "baz": 42}
+        result = serialization_lib.deserialize_keras_object(config)
+        self.assertEqual(result, {"foo": "bar", "baz": 42})
+
+
 @keras.saving.register_keras_serializable()
 class MyDense(keras.layers.Layer):
     def __init__(
